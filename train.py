@@ -1,18 +1,20 @@
 from sklearn.datasets import load_iris
-import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+import joblib
 
 iris = load_iris()
 
-df = pd.DataFrame(
-    iris.data,
-    columns=iris.feature_names
+X = iris.data
+y = iris.target
+
+model = RandomForestClassifier(
+    n_estimators=100,
+    random_state=42
 )
 
-df["target"] = iris.target
-df["target_name"] = df["target"].map(
-    {0: "setosa", 1: "versicolor", 2: "virginica"}
-)
+model.fit(X, y)
 
-print(df.head())
-print("\nDataset shape:", df.shape)
-print("\nTarget names:", iris.target_names)
+joblib.dump(model, "model.pkl")
+
+print("Model trained successfully")
+print("Saved as model.pkl")
