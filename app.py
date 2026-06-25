@@ -1,5 +1,4 @@
-GNU nano 8.7.1                                             app.py
-from flask import Flask
+from flask import Flask, request, jsonify
 import joblib
 
 app = Flask(__name__)
@@ -12,8 +11,18 @@ def home():
 
 @app.route("/predict")
 def predict():
-    prediction = model.predict([[5.1, 3.5, 1.4, 0.2]])
-    return f"Prediction: {prediction[0]}"
+    prediction = model.predict([[5.1, 3.5, 1.4, 0.2]])[0]
+
+    labels = {
+        0: "setosa",
+        1: "versicolor",
+        2: "virginica"
+    }
+
+    return jsonify({
+        "prediction_code": int(prediction),
+        "prediction_name": labels[int(prediction)]
+    })
 
 if __name__ == "__main__":
-    app.run(debug=True)
+  app.run(host="0.0.0.0", port=5000, debug=True)
